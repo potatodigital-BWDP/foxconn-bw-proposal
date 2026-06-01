@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鴻海 × 商周｜補提案</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    color: #ccc;
+    font-size: 14px;
+  }
+
+  .nav button {
+    background: #C8102E;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+  }
+
+  .nav button:hover { background: #a00d25; }
+  .nav button:disabled { background: #555; cursor: default; }
+
+  .slide-counter { color: #aaa; font-size: 13px; min-width: 80px; text-align: center; }
+
+  .slide {
+    width: 960px;
+    min-height: 540px;
+    background: white;
+    display: none;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+
+  .slide.active { display: flex; }
+
+  /* ── 共用元件 ── */
+  .red-banner {
+    background: #C8102E;
+    color: white;
+    padding: 14px 40px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .red-banner.large {
+    padding: 22px 40px;
+    font-size: 28px;
+  }
+
+  .slide-body {
+    padding: 32px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .subtitle {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+  }
+
+  .bullet-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 17px;
+    color: #222;
+    line-height: 1.6;
+  }
+
+  .bullet-list li::before {
+    content: '▶';
+    color: #C8102E;
+    font-size: 13px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .red-line {
+    width: 48px;
+    height: 4px;
+    background: #C8102E;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #C8102E;
+    margin-bottom: 6px;
+  }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+  .box {
+    border: 2px solid #C8102E;
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .box-red {
+    background: #C8102E;
+    color: white;
+    border-radius: 4px;
+    padding: 20px;
+  }
+
+  .box-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #C8102E;
+  }
+
+  .box-red .box-title { color: white; }
+
+  .circle-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: #C8102E;
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .num-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .num-item-text { font-size: 16px; line-height: 1.6; color: #222; }
+  .num-item-text strong { color: #C8102E; }
+
+  .divider { height: 1px; background: #e0e0e0; margin: 20px 0; }
+
+  .quote-bar {
+    border-left: 5px solid #C8102E;
+    padding: 10px 16px;
+    background: #fff5f5;
+    font-size: 18px;
+    font-weight: 700;
+    color: #C8102E;
+    margin: 16px 0;
+  }
+
+  /* ── 時間軸 ── */
+  .timeline {
+    position: relative;
+    padding: 20px 0;
+    margin-top: 8px;
+  }
+
+  .timeline-line {
+    position: absolute;
+    top: 34px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+    background: #C8102E;
+    z-index: 0;
+  }
+
+  .timeline-items {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+
+  .tl-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+  }
+
+  .tl-dot {
+    width: 16px;
+    height: 16px;
+    background: #C8102E;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 2px #C8102E;
+    margin-bottom: 10px;
+  }
+
+  .tl-date {
+    font-size: 11px;
+    font-weight: 700;
+    color: #C8102E;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .tl-label {
+    font-size: 11px;
+    color: #444;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* ── 角色弧線 ── */
+  .arc-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .arc-item {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    border: 2px solid #C8102E;
+    border-radius: 4px;
+  }
+
+  .arc-item .arc-year { font-size: 11px; color: #C8102E; font-weight: 700; }
+  .arc-item .arc-role { font-size: 14px; font-weight: 700; color: #222; margin-top: 4px; }
+  .arc-item .arc-desc { font-size: 11px; color: #666; margin-top: 4px; }
+
+  .arc-arrow { color: #C8102E; font-size: 20px; font-weight: 700; flex-shrink: 0; }
+
+  /* ── Logo bar ── */
+  .logo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 40px;
+    border-bottom: 3px solid #C8102E;
+  }
+
+  .logo-foxconn {
+    font-size: 20px;
+    font-weight: 900;
+    color: #C8102E;
+    letter-spacing: 2px;
+  }
+
+  .logo-bw {
+    font-size: 14px;
+    color: #666;
+    font-weight: 600;
+  }
+
+  .slide-num {
+    position: absolute;
+    bottom: 12px;
+    right: 20px;
+    font-size: 11px;
+    color: #bbb;
+  }
+
+  /* ── P1 特殊 ── */
+  .p1-hero {
+    background: linear-gradient(135deg, #C8102E 0%, #8B0000 100%);
+    color: white;
+    padding: 48px 40px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .p1-tag {
+    background: rgba(255,255,255,0.2);
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .p1-title {
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .p1-sub {
+    font-size: 18px;
+    opacity: 0.85;
+    margin-bottom: 32px;
+  }
+
+  .p1-bullets { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+
+  .p1-bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 16px;
+    opacity: 0.92;
+    line-height: 1.5;
+  }
+
+  .p1-bullets li::before {
+    content: '▶';
+    font-size: 12px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+
+  /* ── P10 特殊 ── */
+  .p10-body {
+    background: #C8102E;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 40px;
+    color: white;
+  }
+
+  .p10-main {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .p10-sub {
+    font-size: 17px;
+    opacity: 0.85;
+    margin-bottom: 32px;
+  }
+
+  .p10-bullets { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+
+  .p10-bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 17px;
+    opacity: 0.95;
+    line-height: 1.6;
+  }
+
+  .p10-bullets li::before {
+    content: '▶';
+    font-size: 12px;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .p10-quote {
+    margin-top: 32px;
+    border-top: 1px solid rgba(255,255,255,0.4);
+    padding-top: 20px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    opacity: 0.9;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button id="prevBtn" onclick="changeSlide(-1)" disabled>← 上一頁</button>
+  <div class="slide-counter" id="counter">1 / 10</div>
+  <button id="nextBtn" onclick="changeSlide(1)">下一頁 →</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P0 — 封面
+══════════════════════════════════════════ -->
+<div class="slide active" id="slide-1">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="p1-hero" style="justify-content: space-between; padding: 36px 40px;">
+    <div>
+      <div style="font-size:13px; letter-spacing:2px; opacity:0.7; margin-bottom:14px;">NEW FOXCONN × 商周</div>
+      <div style="font-size:36px; font-weight:900; line-height:1.3; margin-bottom:18px;">
+        引領台灣，<br>走在 AI 巨浪之先
+      </div>
+      <div style="font-size:16px; line-height:2; opacity:0.9; margin-bottom:28px;">
+        全球 AI 基礎建設投資超過 <strong>7,000 億美元</strong>，<br>
+        這場世紀競賽，台灣，不能是旁觀者。
+      </div>
+    </div>
+    <div style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 24px;">
+      <div style="font-size:15px; line-height:2; opacity:0.92; margin-bottom:20px;">
+        鴻海從世界 <strong>241 座工廠</strong>，走進台灣百工百業經營現場，<br>
+        用 <strong>50 年製造智慧</strong>煉成的 AI 方法論，<br>
+        重新定義台灣產業競爭位置。
+      </div>
+      <div style="font-size:15px; line-height:2; opacity:0.92;">
+        硬體製造王者，到 AI 時代的格局定義者，<br>
+        這，是鴻海轉型的關鍵一役，<br>
+        更是台灣產業<strong>最重要的一次集體升級！</strong>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">01 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P1 — 開場命題
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-2">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="p1-hero">
+    <div class="p1-tag">FORTUNE 19　台灣唯一</div>
+    <div class="p1-title" style="font-size:32px; line-height:1.4;">關鍵時刻，<br>需要新人物故事。</div>
+    <div class="p1-sub" style="font-size:16px; line-height:1.9; margin-bottom: 24px; opacity:0.95;">
+      她，台灣唯一上榜！美國 FORTUNE 全球最具影響力商界女性。<br>
+      她，深入鴻海全球版圖最前線，讓 AI 在世界工廠跑起來，<br>
+      為 New Foxconn 寫下可預見的商業未來。
+    </div>
+    <ul class="p1-bullets">
+      <li>鴻海唯一女性輪值 CEO、AI 軟體事業負責人</li>
+      <li>迎難而上，實踐從製造到平台的轉型策略</li>
+    </ul>
+  </div>
+  <div class="slide-num">02 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P2 — 這不只是一本書
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-3">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">這，不只是一本管理書</div>
+  <div class="slide-body">
+    <div class="subtitle">商周 × 鴻海，攜手創建「大帶小」生態系</div>
+    <div class="quote-bar">Foxconn 3.0「平台創值」核心邏輯</div>
+    <ul class="bullet-list">
+      <li>將內部實踐知識、心法、系統，轉化為對外可商業化服務</li>
+      <li>「大帶小」產業生態系——不只是製造龍頭，而是賦能供應鏈集體升級的平台</li>
+    </ul>
+    <div class="divider"></div>
+    <div style="background:#f9f9f9; border-left: 5px solid #C8102E; padding: 16px 20px;">
+      <div style="font-size:13px; color:#C8102E; font-weight:700; margin-bottom:10px;">商周協力</div>
+      <ul class="bullet-list" style="gap:10px;">
+        <li style="font-size:15px;">全台影響力第一財經媒體，擁有 XX 萬製造業讀者、超過 X 千名企業 CEO 社群</li>
+        <li style="font-size:15px;">書籍、報導、影音延伸到經營現場，打造生態系夥伴交流場域</li>
+        <li style="font-size:15px;">將 AI 實戰經驗落地，協助供應鏈夥伴加速轉型</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-num">03 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P3 — 楊秋瑾是什麼角色
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-4">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">楊秋瑾是什麼角色</div>
+  <div class="slide-body">
+    <div class="subtitle">平台精神的實踐者，不是個人品牌</div>
+    <div class="two-col" style="margin-top: 8px;">
+      <div>
+        <div class="red-line"></div>
+        <div style="font-size:16px; color:#333; line-height:2; margin-bottom:16px;">
+          <strong>園區物流事業部</strong><br>
+          <span style="color:#C8102E; font-size:20px; margin: 4px 0; display:block;">↓</span>
+          <strong>AI 軟體事業群</strong>
+        </div>
+        <div style="font-size:15px; color:#555; line-height:1.8;">
+          做的都是同一件事：<br>
+          把<strong style="color:#C8102E">對內有效的</strong>，<br>
+          變成<strong style="color:#C8102E">對外可商業化的</strong>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <ul class="bullet-list">
+          <li>輪值CEO制度 = F3.0的組織形態本身——從強人驅動走向系統驅動</li>
+          <li>透過楊秋瑾，溝通鴻海下一階段計畫</li>
+          <li>不是打造個人，是讓系統被看見</li>
+        </ul>
+        <div class="quote-bar" style="margin-top:12px; font-size:20px;">
+          鴻海好，台灣好
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">04 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P4 — 兩條線並行
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-5">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">兩條線並行</div>
+  <div class="slide-body">
+    <div class="two-col">
+      <div class="box-red">
+        <div class="box-title" style="font-size:18px;">品牌線　鴻海江湖地位</div>
+        <div style="font-size:15px; line-height:1.9; opacity:0.95;">
+          第一屆 AI 創新百強<br>
+          <strong style="font-size:18px;">製造業冠軍</strong>
+          <div style="font-size:22px; margin: 6px 0;">↓</div>
+          第二屆<br>
+          <strong style="font-size:18px;">主要贊助商暨倡議者</strong>
+          <div style="font-size:22px; margin: 6px 0;">↓</div>
+          <strong style="font-size:16px;">台灣 AI 轉型的最重要通路</strong>
+        </div>
+      </div>
+      <div class="box">
+        <div class="box-title" style="font-size:18px;">人物線　楊秋瑾論述弧線</div>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+          <div class="num-item">
+            <span class="circle-num">1</span>
+            <div class="num-item-text"><strong>論述者</strong>　Megatalk 首次大型公開論述</div>
+          </div>
+          <div class="num-item">
+            <span class="circle-num">2</span>
+            <div class="num-item-text"><strong>賦能者</strong>　廠訪導師，我的經驗給你用</div>
+          </div>
+          <div class="num-item">
+            <span class="circle-num">3</span>
+            <div class="num-item-text"><strong>倡議者</strong>　頒獎典禮，你也可以做到</div>
+          </div>
+          <div class="num-item">
+            <span class="circle-num">4</span>
+            <div class="num-item-text"><strong>示範者</strong>　年會，這是我們真正做到的</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">05 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P5 — AI創新百強
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-6">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">AI 創新百強：從冠軍到賦能者</div>
+  <div class="slide-body">
+    <div class="subtitle">第一屆冠軍的下一步，是成為別人的起跑點</div>
+    <div style="display:flex; flex-direction:column; gap:18px; margin-top: 8px;">
+      <div class="num-item">
+        <span class="circle-num" style="width:40px;height:40px;font-size:18px;">1</span>
+        <div class="num-item-text" style="font-size:17px;">
+          鴻海 = <strong style="color:#C8102E">第一屆 AI 創新百強製造業冠軍</strong><br>
+          <span style="color:#666; font-size:14px;">冠軍身份是倡議的信用來源，不只是榮譽</span>
+        </div>
+      </div>
+      <div class="num-item">
+        <span class="circle-num" style="width:40px;height:40px;font-size:18px;">2</span>
+        <div class="num-item-text" style="font-size:17px;">
+          第二屆 = <strong style="color:#C8102E">主要贊助商，把自己的經驗與資源分享給台灣產業</strong><br>
+          <span style="color:#666; font-size:14px;">從「我得獎了」走向「你也可以」</span>
+        </div>
+      </div>
+      <div class="num-item">
+        <span class="circle-num" style="width:40px;height:40px;font-size:18px;">3</span>
+        <div class="num-item-text" style="font-size:17px;">
+          這是 F3.0 平台創值的 <strong style="color:#C8102E">產業語言版</strong><br>
+          <span style="color:#666; font-size:14px;">鴻海成為台灣 AI 轉型最重要的通路</span>
+        </div>
+      </div>
+    </div>
+    <div class="red-banner" style="margin-top:24px; font-size:17px; border-radius:4px;">
+      「鴻海好，台灣好」——這是最具說服力的具體實踐
+    </div>
+  </div>
+  <div class="slide-num">06 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P6 — 完整時間軸
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-7">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">完整時間軸</div>
+  <div class="slide-body" style="justify-content: flex-start;">
+    <div class="subtitle">八個月，六個接觸點，一條完整弧線</div>
+    <div class="timeline">
+      <div class="timeline-line"></div>
+      <div class="timeline-items">
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2026 Q3</div>
+          <div class="tl-label">Megatalk<br>首次大型<br>公開論述</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2026.08</div>
+          <div class="tl-label">第二屆<br>AI百強<br>徵件開始</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2026.09—10</div>
+          <div class="tl-label">鴻海示範<br>園區<br>獨家廠訪</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2026 Q4末</div>
+          <div class="tl-label">書籍<br>正式<br>發布</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2027.01</div>
+          <div class="tl-label">頒獎典禮<br>＋<br>封面故事</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2027 Q1—Q2</div>
+          <div class="tl-label">專欄<br>連載</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-date">2027.04</div>
+          <div class="tl-label">年會<br>Keynote<br>＋ Panel</div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-top:8px;">
+      <div style="background:#fff5f5; border-top: 3px solid #C8102E; padding:14px;">
+        <div style="font-size:12px; color:#C8102E; font-weight:700; margin-bottom:6px;">2026　論述期</div>
+        <div style="font-size:13px; color:#444; line-height:1.6;">Megatalk → 廠訪導師<br>建立楊秋瑾的公開論述</div>
+      </div>
+      <div style="background:#fff5f5; border-top: 3px solid #C8102E; padding:14px;">
+        <div style="font-size:12px; color:#C8102E; font-weight:700; margin-bottom:6px;">2027 Q1　倡議期</div>
+        <div style="font-size:13px; color:#444; line-height:1.6;">頒獎 → 封面故事 → 專欄<br>書＋媒體工具接力強化</div>
+      </div>
+      <div style="background:#fff5f5; border-top: 3px solid #C8102E; padding:14px;">
+        <div style="font-size:12px; color:#C8102E; font-weight:700; margin-bottom:6px;">2027 Q2　示範期</div>
+        <div style="font-size:13px; color:#444; line-height:1.6;">年會 Keynote ＋ Panel<br>交出成績單，完成弧線</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">07 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P7 — 獨家廠訪
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-8">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">獨家廠訪：大帶小的第一個真實場景</div>
+  <div class="slide-body">
+    <div class="subtitle">不是參觀，是生態系的第一次召集</div>
+    <div class="two-col">
+      <div class="box-red">
+        <div class="box-title" style="font-size:16px; margin-bottom:16px;">活動資訊</div>
+        <div style="font-size:15px; line-height:2.1; opacity:0.95;">
+          📅　<strong>時間</strong>　2026年 9—10 月<br>
+          📍　<strong>地點</strong>　鴻海示範園區<br>
+          👤　<strong>帶隊</strong>　商周執行長郭奕伶<br>
+          🎯　<strong>對象</strong>　有意報名第二屆 AI 百強的企業
+        </div>
+      </div>
+      <div>
+        <ul class="bullet-list">
+          <li>楊秋瑾主講：第一屆成功範例 ＋ AI 軟體事業部實踐心得</li>
+          <li>園區本身就是展示——楊秋瑾的成績單就是場域</li>
+          <li>擴散：郭奕伶粉專企業參訪紀錄 ＋ AI 百強社群內容</li>
+        </ul>
+        <div class="quote-bar" style="margin-top:20px;">
+          楊秋瑾定位：AI 創新百強導師
+        </div>
+        <div style="font-size:14px; color:#666; line-height:1.7; margin-top:12px;">
+          類比：商周 CEO 學院企業參訪大師分享<br>
+          差別：這是專門為 AI 百強報名者舉辦的獨家場次
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">08 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P8 — 內容工具接力
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-9">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">書籍 ＋ 封面故事 ＋ 專欄：內容工具接力</div>
+  <div class="slide-body">
+    <div class="subtitle">每一波內容，都在強化同一個論述</div>
+    <div class="arc-row" style="margin-bottom: 24px;">
+      <div class="arc-item">
+        <div class="arc-year">2026 Q4</div>
+        <div class="arc-role">書籍發布</div>
+        <div class="arc-desc">心法系統化成文字</div>
+      </div>
+      <div class="arc-arrow">→</div>
+      <div class="arc-item">
+        <div class="arc-year">2027.01</div>
+        <div class="arc-role">頒獎倡議</div>
+        <div class="arc-desc">冠軍→賦能者角色轉換</div>
+      </div>
+      <div class="arc-arrow">→</div>
+      <div class="arc-item">
+        <div class="arc-year">2027 Q1</div>
+        <div class="arc-role">封面故事</div>
+        <div class="arc-desc">商周深度詮釋</div>
+      </div>
+      <div class="arc-arrow">→</div>
+      <div class="arc-item">
+        <div class="arc-year">2027 Q1—Q2</div>
+        <div class="arc-role">專欄連載</div>
+        <div class="arc-desc">持續論述熱度</div>
+      </div>
+    </div>
+    <div style="background:#f9f9f9; border-left: 5px solid #C8102E; padding:18px 20px;">
+      <div style="font-size:13px; color:#C8102E; font-weight:700; margin-bottom:8px;">封面故事主軸</div>
+      <div style="font-size:16px; color:#333; line-height:1.8;">
+        「既是製造業冠軍，又是最重視軟體的製造商」<br>
+        楊秋瑾在鴻海 F3.0 轉型中扮演的關鍵角色——<br>
+        從代工帝國走向<strong style="color:#C8102E">制度化平台公司</strong>的施工總監
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">09 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P9 — 年會
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-10">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="red-banner large">年會 Keynote ＋ Panel：從倡議走向示範</div>
+  <div class="slide-body">
+    <div class="subtitle">2027年 4月 21—22日，鴻海在台灣產業面前交出成績單</div>
+    <div style="display:flex; flex-direction:column; gap:20px; margin-top:8px;">
+      <div class="num-item">
+        <span class="circle-num" style="width:40px;height:40px;font-size:18px;">1</span>
+        <div class="num-item-text" style="font-size:17px;">
+          <strong style="color:#C8102E">小 Keynote</strong>　——　我們做了什麼，我們學到什麼<br>
+          <span style="color:#666; font-size:14px;">AI 軟體事業群：模組化、平台化的實際成果</span>
+        </div>
+      </div>
+      <div class="num-item">
+        <span class="circle-num" style="width:40px;height:40px;font-size:18px;">2</span>
+        <div class="num-item-text" style="font-size:17px;">
+          <strong style="color:#C8102E">Panel 討論</strong>　——　具體解決方案，讓想進生態系的企業看到入口<br>
+          <span style="color:#666; font-size:14px;">從「倡議」走向「示範」，最具說服力的收尾</span>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div style="background:#fff5f5; padding: 16px 20px; border-radius:4px;">
+      <div style="font-size:13px; color:#C8102E; font-weight:700; margin-bottom:10px;">角色弧線完成</div>
+      <div class="arc-row">
+        <div style="text-align:center; flex:1; font-size:15px; font-weight:700; color:#555;">論述者<br><span style="font-size:12px; font-weight:400;">Megatalk</span></div>
+        <div class="arc-arrow">→</div>
+        <div style="text-align:center; flex:1; font-size:15px; font-weight:700; color:#555;">賦能者<br><span style="font-size:12px; font-weight:400;">廠訪</span></div>
+        <div class="arc-arrow">→</div>
+        <div style="text-align:center; flex:1; font-size:15px; font-weight:700; color:#555;">倡議者<br><span style="font-size:12px; font-weight:400;">頒獎典禮</span></div>
+        <div class="arc-arrow">→</div>
+        <div style="text-align:center; flex:1; font-size:15px; font-weight:700; color:#C8102E; border: 2px solid #C8102E; border-radius:4px; padding:6px;">示範者<br><span style="font-size:12px; font-weight:400;">年會</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num">10 / 11</div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     P10 — 商周角色
+══════════════════════════════════════════ -->
+<div class="slide" id="slide-11">
+  <div class="logo-bar">
+    <div class="logo-foxconn">FOXCONN</div>
+    <div class="logo-bw"></div>
+  </div>
+  <div class="p10-body">
+    <div class="p10-main">商周的角色</div>
+    <div class="p10-sub">不是出版商，不是媒體——是生態系的召集人</div>
+    <ul class="p10-bullets">
+      <li>把想進鴻海生態系的企業，帶到楊秋瑾的門口</li>
+      <li>信譽、知識、連結、通路、決策——五大賦能同步啟動</li>
+      <li>商周是鴻海「大帶小」對外溝通、對外召集最有力的夥伴</li>
+    </ul>
+    <div class="p10-quote">「鴻海好，台灣好」</div>
+  </div>
+  <div class="slide-num" style="color: rgba(255,255,255,0.5);">11 / 11</div>
+</div>
+
+<script>
+  let current = 1;
+  const total = 11;
+
+  function changeSlide(dir) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    current += dir;
+    document.getElementById('slide-' + current).classList.add('active');
+    document.getElementById('counter').textContent = current + ' / ' + total;
+    document.getElementById('prevBtn').disabled = current === 1;
+    document.getElementById('nextBtn').disabled = current === total;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' && current < total) changeSlide(1);
+    if (e.key === 'ArrowLeft' && current > 1) changeSlide(-1);
+  });
+</script>
+</body>
+</html>
